@@ -1,3 +1,9 @@
+/**
+ *  A single base class for writing simple class unit tests
+ *  for mor information https://github.com/michalporeba/jptests
+ *  @version 0.1.0 
+ */
+
 import java.lang.Class;
 import java.lang.Exception;
 
