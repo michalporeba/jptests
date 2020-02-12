@@ -5,11 +5,12 @@ import java.lang.Exception;
  * A single base class for writing simple class unit tests.
  * For mor information see <a href="https://github.com/michalporeba/jptests">JPTest Repository</a>.
  *  
- * @version 0.1.0 
+ * @version 0.2.0 
  */
 
 public abstract class JPTests
 {
+	private static final double DEFAULT_DOUBLE_PRECISION = 0.001;
 	protected static int assertions = 0;
 	protected static int failed = 0;
 	protected static int passed = 0;
@@ -26,6 +27,13 @@ public abstract class JPTests
 
 	protected static void assertAreEqual(double expected, double actual, String description)
 	{
+		assertAreEqual(expected, actual, DEFAULT_DOUBLE_PRECISION, description);
+	}
+	
+	protected static void assertAreEqual(double expected, double actual, double precision, String description)
+	{
+		expected = precision*Math.round(expected*Math.pow(10,-Math.log10(precision)));
+		actual = precision*Math.round(actual*Math.pow(10,-Math.log10(precision)));
 		assertAreEqual(new Double(expected), new Double(actual), "f", description);
 	}
 	
