@@ -1,11 +1,15 @@
 import java.lang.Class;
 import java.lang.Exception;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * A single base class for writing simple class unit tests.
  * For mor information see <a href="https://github.com/michalporeba/jptests">JPTest Repository</a>.
  *  
- * @version 0.2.0 
+ * @version 0.3.0 
  */
 
 public abstract class JPTests
@@ -83,6 +87,40 @@ public abstract class JPTests
 			}
 		}
 		
+    }
+    
+    public static <T> void assertProperty(Object obj, String propertyName, T defaultValue, T newValue)
+    {
+        try {
+            T value = invokeGetter(obj, propertyName);
+            assertAreEqual(defaultValue, value, "%s", String.format("%s's default value should be [%s]", propertyName, defaultValue));
+            invokeSetter(obj, propertyName, newValue);
+            value = invokeGetter(obj, propertyName);
+            assertAreEqual(newValue, value, "%s", String.format("%s's changed value should be [%s]", propertyName, newValue));
+        } 
+        catch (Exception ex) 
+        {
+            System.out.printf("FAIL: %s. %s exception was thrown when testing property.", propertyName, ex.getClass());
+            ++failed;
+        }
+    }
+
+    private static <T> void invokeSetter(Object obj, String propertyName, T value)
+        throws IntrospectionException, IllegalAccessException, InvocationTargetException
+	{
+		PropertyDescriptor pd = new PropertyDescriptor(propertyName, obj.getClass());
+        Method setter = pd.getWriteMethod();
+        setter.invoke(obj, value);
+	}
+ 
+    @SuppressWarnings("unchecked")
+    private static <T> T invokeGetter(Object obj, String propertyName)
+        throws IntrospectionException, IllegalAccessException, InvocationTargetException
+	{
+        PropertyDescriptor pd = new PropertyDescriptor(propertyName, obj.getClass());
+        Method getter = pd.getReadMethod();
+        Object value = getter.invoke(obj); 
+        return (T)value;
 	}
 
 	private static <T> void assertAreEqual(T expected, T actual, String format, String description)
