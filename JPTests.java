@@ -93,10 +93,10 @@ public abstract class JPTests
     {
         try {
             T value = invokeGetter(obj, propertyName);
-            assertAreEqual(defaultValue, value, "%s", String.format("%s's default value should be [%s]", propertyName, defaultValue));
+            assertAreEqual(defaultValue, value, "s", String.format("%s's default value should be [%s]", propertyName, defaultValue));
             invokeSetter(obj, propertyName, newValue);
             value = invokeGetter(obj, propertyName);
-            assertAreEqual(newValue, value, "%s", String.format("%s's changed value should be [%s]", propertyName, newValue));
+            assertAreEqual(newValue, value, "s", String.format("%s's changed value should be [%s]", propertyName, newValue));
         } 
         catch (Exception ex) 
         {
