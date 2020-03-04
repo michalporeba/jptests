@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
  * A single base class for writing simple class unit tests.
  * For mor information see <a href="https://github.com/michalporeba/jptests">JPTest Repository</a>.
  *  
- * @version 0.3.2
+ * @version 0.3.3
  */
 
 public abstract class JPTests
@@ -18,6 +18,16 @@ public abstract class JPTests
 	protected static int assertions = 0;
 	protected static int failed = 0;
 	protected static int passed = 0;
+
+	public static String toSummary() 
+    {
+        return String.format("Passed: %d, Failed %d", passed, failed);
+    }
+	
+	public static void printSummary()
+	{
+		System.out.println("\nRESULTS:\n  "+toSummary()+"\n");
+	}
 
 	protected static void assertAreEqual(char expected, char actual, String description)
 	{
@@ -132,11 +142,6 @@ public abstract class JPTests
             System.out.printf("[FAIL]: %s. %s exception was thrown when testing property.", propertyName, ex.getClass());
             ++failed;
         }
-    }
-
-    public static String toSummary() 
-    {
-        return String.format("Passed: %d, Failed %d", passed, failed);
     }
 
     private static <T> void invokeSetter(Object obj, String propertyName, T value)
