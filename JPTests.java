@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
  * A single base class for writing simple class unit tests.
  * For mor information see <a href="https://github.com/michalporeba/jptests">JPTest Repository</a>.
  *  
- * @version 0.3.3
+ * @version 0.3.4
  */
 
 public abstract class JPTests
@@ -94,19 +94,19 @@ public abstract class JPTests
 		try 
 		{
 			action.execute();
-			System.out.printf("[FAIL]: %s. %s exception was expected but it wasn't thrown%n", description, exceptionType);
+			System.out.printf("[FAIL] %s. %s exception was expected but it wasn't thrown%n", description, exceptionType);
 			++failed;
 		} 
 		catch (Exception ex) 
 		{
 			if (ex.getClass().equals(exceptionType))
 			{
-				System.out.printf("[PASS]: %s%n", description);
+				System.out.printf("[PASS] %s%n", description);
 				++passed;
 			}
 			else 
 			{
-				System.out.printf("[FAIL]: %s. %s exception was thrown instead of %s%n", description, ex.getClass(), exceptionType);
+				System.out.printf("[FAIL] %s. %s exception was thrown instead of %s%n", description, ex.getClass(), exceptionType);
 				++failed;
 			}
 		}
@@ -118,12 +118,12 @@ public abstract class JPTests
         try 
         {
             action.execute();
-            System.out.printf("[PASS]: %s%n", description);
+            System.out.printf("[PASS] %s%n", description);
             ++passed;
         }
         catch (Exception ex)
         {
-            System.out.printf("[FAIL]: %s. %s exception was frown%n", description, ex.getClass());
+            System.out.printf("[FAIL] %s. %s exception was frown%n", description, ex.getClass());
             ++failed;
         }
     }
@@ -139,7 +139,7 @@ public abstract class JPTests
         } 
         catch (Exception ex) 
         {
-            System.out.printf("[FAIL]: %s. %s exception was thrown when testing property.", propertyName, ex.getClass());
+            System.out.printf("[FAIL] %s. %s exception was thrown when testing property.", propertyName, ex.getClass());
             ++failed;
         }
     }
