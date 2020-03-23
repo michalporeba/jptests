@@ -14,8 +14,18 @@ I am also using this project to experiment with how programming language course 
 
 In each step the problem will be implemented in a number of ways to look for a good starting point. 
 
+the same example problems will be implemented in different ways
+
+1. procedural - typical start to programming
+2. object oriented - typical entry level object programming examples, breaking good design principles in the OOP, for simplicity of the example. 
+3. testable - oop, but with good practicies that allow simple testing with JPTest
+
 ### 01 Hello World
 The most basic programming example
+
+The object oriented example is difficult to test, it also breaks the single responsibility principle. The `Greeter` class is responsible for constructing the message, and communicating with the user. It has also unnecessary dependencies on `System.out`.
+
+The `Greeter` is an object with behaviour but without data. 
 
 ### 02 Counter
 A step after the hello world. 
