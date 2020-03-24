@@ -1,4 +1,4 @@
-public class Procedural
+public class Main
 {
     public static void main(String[] args)
     {

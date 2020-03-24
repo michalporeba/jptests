@@ -1,4 +1,4 @@
-public class ObjectOriented
+public class Main
 {
     public static void main(String[] args)
     {
