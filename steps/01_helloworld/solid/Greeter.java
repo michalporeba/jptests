@@ -7,21 +7,16 @@ public class Greeter
         this.output = output;
     }
 
-    public void greet(String name)
+    public void greet(String... names)
     {
-        output.writeUserMessage(createWelcomeMessage(name));
-    }
-
-    public void greet(String... names[])
-    {
-        for(String name : name) 
+        for(String name : names) 
         {
-            greet(name);
+            output.writeUserMessage(createWelcomeMessage(name));
         }
     }
 
     private String createWelcomeMessage(String name)
     {
-        return String.format("Hello %s", name);
+        return String.format("Hello %s!", name);
     }
 }

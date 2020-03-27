@@ -1,4 +1,4 @@
-import java.util.Queue;
+import java.util.ArrayList;
 
 public class GreeterShould
     extends JPTests
@@ -9,21 +9,11 @@ public class GreeterShould
         Greeter greeter = new Greeter(outputWriter);
 
         greeter.greet("World");
-    }
+        assertAreEqual("Hello World!", outputWriter.getNextMessage(), "Greet the world");
 
-    private class TestOutputWriter 
-        implements OutputWriter
-    {
-        Queue<String> userMessages = new Queue<String>();
-
-        public void writeUserMessage(String message)
-        {
-            userMessages.add(message);
-        }
-
-        public String getNextMessage()
-        {
-            return userMessages.remove();
-        }
+        greeter.greet("Alun");
+        greeter.greet("Bethan");
+        assertAreEqual("Hello Alun!", outputWriter.getNextMessage(), "Greet Alun");
+        assertAreEqual("Hello Bethan!", outputWriter.getNextMessage(), "Greet Bethan");
     }
 }
