@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/**
+ * The class that tests the behaviour of {@link Greeter} class. 
+ */
 public class GreeterShould
     extends JPTests
 {
