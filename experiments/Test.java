@@ -3,6 +3,8 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.InvocationTargetException;
 import java.io.File;
 import java.io.IOException;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 
 public class Test
 {
@@ -14,22 +16,24 @@ public class Test
 
     private static void executeAll()
     {
-        processFolder(new File("."));
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        processFolder(compiler, new File("."));
     }
 
-    private static void processFolder(File file)
+    private static void processFolder(JavaCompiler compiler, File file)
     {
         for (File f : file.listFiles())
         {
             if (f.isDirectory())
             {
-                processFolder(f);
+                processFolder(compiler, f);
             }
             else if (f.isFile())
             {
                 if (f.getName().endsWith("Should.java"))
                 {
                     System.out.printf("%s is a test class%n", f.getName());
+                    compiler.run(null, null, null, f.getPath());
                 }
             }
         }
