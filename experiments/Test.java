@@ -10,6 +10,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import javax.tools.JavaCompiler.CompilationTask;
+import java.util.ArrayList;
 
 public class Test
 {
@@ -23,18 +24,25 @@ public class Test
     {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         ClassLoader loader = Test.class.getClassLoader();
-        DiagnosticCollector diagnosticCollector = new DiagnosticCollector();
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnosticListener, Locale.ENGLISH, Charset.forName("utf-8"));
-        processFolder(fileManager, compiler, loader, new StringWriter(), new File("."));
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+        try 
+        {
+            processFolder(fileManager, compiler, loader, new File("."));
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
-    private static void processFolder(JavaFileManager fileManager, JavaCompiler compiler, ClassLoader loader, StringWriter output, DiagnosticCollector diagnosticCollector, File file)
+    private static void processFolder(StandardJavaFileManager fileManager, JavaCompiler compiler, ClassLoader loader, File file)
+        throws Exception
     {
         for (File f : file.listFiles())
         {
             if (f.isDirectory())
             {
-                processFolder(fileManager, compiler, loader, output, diagnosticCollector, f);
+                processFolder(fileManager, compiler, loader, f);
             }
             else if (f.isFile())
             {
@@ -44,17 +52,25 @@ public class Test
                     String className = f.getName().replace(".java", "");
                     System.out.printf("  class name is %s%n", className);
 
-                    String[] options = new String[] {};
-                    CompilationTask task = compiler.getTask(output, fileManager, diagnosticListener, options, classes, compilationUnits)
-                    compiler.run(null, null, null, f.getPath());
-                    try 
+                    ArrayList<File> files = new ArrayList<File>();
+                    files.add(f);
+                    CompilationTask task = compiler.getTask(null, fileManager, null, null, null, fileManager.getJavaFileObjectsFromFiles(files));
+                    //compiler.run(null, null, null, f.getPath());
+                    if (task.call())
                     {
-                        Class cls = loader.loadClass(className);
-                        processClass(cls);
+                        try 
+                        {
+                            Class cls = loader.loadClass(className);
+                            processClass(cls);
+                        }
+                        catch (ClassNotFoundException ex)
+                        {
+                            System.out.println("Class not found");
+                        }
                     }
-                    catch (ClassNotFoundException ex)
+                    else 
                     {
-                        System.out.println("Class not found");
+                        throw new Exception("Compilation failed. Tests failed.");
                     }
                 }
             }
