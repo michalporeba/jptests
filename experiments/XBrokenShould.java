@@ -1,4 +1,4 @@
-public class BrokenShould
+public class XBrokenShould
 {
     public void broken();
 }

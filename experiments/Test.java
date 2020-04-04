@@ -17,7 +17,6 @@ public class Test
     public static void main(String[] args)
     {
         executeAll();
-        //executeSampleShould();
     }
 
     private static void executeAll()
@@ -42,34 +41,32 @@ public class Test
         {
             if (f.isDirectory())
             {
+                // step to the folder
                 processFolder(fileManager, compiler, loader, f);
             }
             else if (f.isFile())
             {
                 if (f.getName().endsWith("Should.java"))
                 {
-                    System.out.printf("%s is a test class%n", f.getName());
                     String className = f.getName().replace(".java", "");
-                    System.out.printf("  class name is %s%n", className);
 
                     ArrayList<File> files = new ArrayList<File>();
                     files.add(f);
                     CompilationTask task = compiler.getTask(null, fileManager, null, null, null, fileManager.getJavaFileObjectsFromFiles(files));
-                    //compiler.run(null, null, null, f.getPath());
                     if (task.call())
                     {
                         try 
                         {
-                            Class cls = loader.loadClass(className);
-                            processClass(cls);
+                            processClass(loader.loadClass(className));
                         }
                         catch (ClassNotFoundException ex)
                         {
-                            System.out.println("Class not found");
+                            ex.printStackTrace();
                         }
                     }
                     else 
                     {
+                        // compilation failed, so throw to stop any further processing
                         throw new Exception("Compilation failed. Tests failed.");
                     }
                 }
@@ -79,18 +76,24 @@ public class Test
 
     private static void processClass(Class cls)
     {
+        boolean first = true;
         for(Method m : cls.getDeclaredMethods())
         {
+            if (first)
+            {
+                System.out.println("\n" + m.getDeclaringClass().getName().replace("Should", " should... "));
+                first = false;
+            }
+
             if (
-                Modifier.isPublic(m.getModifiers())
-                && !Modifier.isAbstract(m.getModifiers())
-                && !Modifier.isStatic(m.getModifiers())
-                && m.getReturnType().equals(Void.TYPE)
-                && m.getParameterCount() == 0
+                Modifier.isPublic(m.getModifiers())         // test methods need to be public
+                && !Modifier.isAbstract(m.getModifiers())   // test methdos cannot be abstract
+                && !Modifier.isStatic(m.getModifiers())     // test methods cannot be static
+                && m.getReturnType().equals(Void.TYPE)      // test methods cannot return anything
+                && m.getParameterCount() == 0               // at the moment only parameterless methods are supported
             )
             {
-                System.out.print(m.getDeclaringClass().getName() + ".");
-                System.out.println(m.getName());
+                System.out.println("  " + m.getName().replace("_", " "));
                 try 
                 {
                     Object instance = cls.newInstance();
